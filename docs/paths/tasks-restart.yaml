@@ -1,0 +1,7 @@
+get:
+  tags:
+    - "Tasks"
+  description: 'Tasks restart'
+  responses:
+    200:
+      description: "Ok"

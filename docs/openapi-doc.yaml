@@ -1,0 +1,19 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:18901/'
+    description: "Local development"
+paths:
+  /addresses/check:
+    $ref: './paths/check.yaml'
+  /tasks/index:
+    $ref: './paths/tasks-index.yaml'
+  /tasks/restart:
+    $ref: './paths/tasks-restart.yaml'
+  /addresses/check/result:
+    $ref: './paths/check-result.yaml'
+
+  

@@ -1,0 +1,37 @@
+get:
+  tags:
+    - "Check http"
+  description: 'Check result'
+  parameters:
+    - in: query
+      name: page[number]
+      schema:
+        type: integer
+      required: true
+    - in: query
+      name: page[size]
+      schema:
+        type: integer
+      required: true
+  responses:
+    200:
+      description: "Ok"
+      content:
+        'application/json':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                cratedAt:
+                  type: string
+                  example: "2022-06-23T23:16:17+00:00"
+                address:
+                  type: string
+                  example: "http://google.com"
+                httpStatus:
+                  type: integer
+                  example: 200

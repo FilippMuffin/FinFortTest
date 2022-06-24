@@ -1,0 +1,47 @@
+get:
+  tags:
+    - "Tasks"
+  description: 'Tasks index paginate'
+  parameters:
+    - in: query
+      name: page[number]
+      schema:
+        type: integer
+      required: true
+    - in: query
+      name: page[size]
+      schema:
+        type: integer
+      required: true
+  responses:
+    200:
+      description: "Ok"
+      content:
+        'application/json':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                status:
+                  type: string
+                  example: "inProgress"
+                  oneOf:
+                    - "pending"
+                    - "inProgress"
+                    - "error"
+                    - "ready"
+                cratedAt:
+                  type: string
+                  example: "2022-06-23T23:16:17+00:00"
+                addresses:
+                  type: array
+                  items:
+                    type: string
+                    example: "http://google.com"
+                updatedAt:
+                  type: string
+                  example: "2022-06-23T23:16:17+00:00"
