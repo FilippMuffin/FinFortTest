@@ -5,9 +5,9 @@
 - [x] Докментация OpenAPi<strong>(Не понял как <em>быстренько CORS</em> организовать)</strong>
 - [x] Можно передать с помощью запроса массив состоящий из ссылок на любые https страницы
 - [x] Существует консумер, который ходит и получает http код от сервера и сохраняет в базе 
-- [x] Все должно быть в docker-compose<strong>(Будет доработано, перенесу воркера в отдельный контейнер, сделаю полный пайплайн с миграциями)</strong> 
+- [x] Все должно быть в docker-compose 
 - [ ] Консумеры должны уметь масштабироваться<strong>(Не знаю как реализовать)</strong>
-- [ ] Должен быть автотест для метода передачи списка страниц и для консумера
+- [x] Должен быть автотест для метода передачи списка страниц и для консумера
 - [x] В качестве сервера очередей использовать Rabbit
 - [x] Должен быть api метод который выдаст результаты по всем заданиям, включая статус (ready, pending, inProgress)
 - [x] Должен быть api метод который перезапустит все проверки 
@@ -20,8 +20,6 @@
 
 ## Сборка
 ```text
-docker-compose up -d --build
-docker-compose exec php composer install
-docker-compose exec php php bin/console doctrine:migrations:migrate
-docker-compose exec php php bin/console messenger:consume -vv
+make release
+make migrate
 ```

@@ -20,7 +20,7 @@ class MessageHandler implements MessageHandlerInterface
         private RabbitTasksRepository $repository
     ) { }
 
-    public function __invoke(ToCheckMessage $message)
+    public function __invoke(ToCheckMessage $message): int
     {
         $task = $message->getRelatedEntity();
         try {
@@ -29,10 +29,12 @@ class MessageHandler implements MessageHandlerInterface
             $this->processMessage($message);
         } catch (\Exception $e) {
             $this->updateTaskStatus($task, 'error');
-            return;
+            return 0;
         }
 
         $this->updateTaskStatus($task, 'ready');
+
+        return 0;
     }
 
     private function updateTaskStatus(RabbitTasks $task, string $taskStatus)
@@ -50,12 +52,17 @@ class MessageHandler implements MessageHandlerInterface
 
     private function fetchAddress(string $address): int
     {
-        $response = $this->client->request(
-            'GET',
-            $address,
-        );
-
-        return $response->getStatusCode();
+        try {
+            $response = $this->client->request(
+                'GET',
+                $address,
+            );
+            $status = $response->getStatusCode();
+        } catch (\Symfony\Component\HttpClient\Exception\TransportException $e) {
+            $status = 0;
+        } finally {
+            return $status;
+        }
     }
 
     private function processMessage(ToCheckMessage $message)

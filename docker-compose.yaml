@@ -1,6 +1,24 @@
 version: "3.9"
 services:
 
+  x-worker-common: &worker-common
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - app
+      - rabbitmq
+    restart: unless-stopped
+    tty: true
+    user: www
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - finfort-network
+    links:
+      - db:db-server
+
   app:
     build:
       context: ./
@@ -27,7 +45,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_USER: ${DB_USERNAME}
-      SERVICE_TAGS: prod
       SERVICE_NAME: mysql
     ports:
       - '${DOCKER_DATABASE_PORT}:3306'
@@ -60,19 +77,9 @@ services:
     networks:
       - finfort-network
 
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-13}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
-      POSTGRES_USER: ${POSTGRES_USER:-symfony}
-    volumes:
-      - db-data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+  worer-rabbit:
+    <<: *worker-common
+    command: "php bin/console messenger:consume -vv"
 
 networks:
   finfort-network:
@@ -81,7 +88,3 @@ networks:
 volumes:
   db:
     driver: local
-
-###> doctrine/doctrine-bundle ###
-  db-data:
-###< doctrine/doctrine-bundle ###
